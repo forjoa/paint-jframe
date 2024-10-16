@@ -43,8 +43,9 @@ public class Paint extends JPanel {
     private final static List<Line> lines = new ArrayList<>();
     private Line currentLine;
     private int lineStroke = 3;
-    private static final String[] colorNames = {"Rojo", "Negro", "Azul", "Verde", "Amarillo", "Gris", "BORRADOR"};
-    private static final Color[] colors = {Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY, Color.WHITE};
+    private static final String[] colorNames = { "Rojo", "Negro", "Azul", "Verde", "Amarillo", "Gris", "BORRADOR" };
+    private static final Color[] colors = { Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY,
+            Color.WHITE };
     private Color currentColor = Color.BLACK;
 
     public Paint() {
@@ -125,7 +126,7 @@ public class Paint extends JPanel {
 
         // Crear combo box para selección de color (basado en nombres de colores)
         JComboBox<String> colorsCombo = new JComboBox<>(colorNames);
-        colorsCombo.setSelectedIndex(1); // Por defecto selecciona Negro (índice 1)
+        colorsCombo.setSelectedIndex(1);
         colorsCombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,8 +141,8 @@ public class Paint extends JPanel {
         toolsPanel.add(colorsCombo);
 
         // Añadir paneles y componentes al frame
-        f.add(toolsPanel, BorderLayout.NORTH);  // Herramientas en la parte superior
-        f.add(p, BorderLayout.CENTER);          // Área de dibujo en el centro
+        f.add(toolsPanel, BorderLayout.NORTH);
+        f.add(p, BorderLayout.CENTER);
 
         f.setSize(800, 600);
         f.setLocationRelativeTo(null);
