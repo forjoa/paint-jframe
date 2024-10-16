@@ -47,6 +47,7 @@ public class Paint extends JPanel {
     private static final Color[] colors = { Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY,
             Color.WHITE };
     private Color currentColor = Color.BLACK;
+    private static final String[] lineTypes = { "Libre", "Línea recta", "Rectángulo", "Cuadrado", "Círculo" };
 
     public Paint() {
         addMouseListener(new MouseAdapter() {
@@ -134,11 +135,17 @@ public class Paint extends JPanel {
             }
         });
 
+        // TODO: Combobox para elegir los tipos de línea
+        JComboBox<String> lineTypesCombo = new JComboBox<>(lineTypes);
+        lineTypesCombo.setSelectedIndex(0);
+
         // Añadir los componentes al panel de herramientas
         toolsPanel.add(new JLabel("Grosor:"));
         toolsPanel.add(sliderStroke);
         toolsPanel.add(new JLabel("Colores:"));
         toolsPanel.add(colorsCombo);
+        toolsPanel.add(new JLabel("Tipo de línea:"));
+        toolsPanel.add(lineTypesCombo);
 
         // Añadir paneles y componentes al frame
         f.add(toolsPanel, BorderLayout.NORTH);
