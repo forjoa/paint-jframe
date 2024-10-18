@@ -47,7 +47,7 @@ public class Paint extends JPanel {
     private static final Color[] colors = { Color.RED, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.GRAY,
             Color.WHITE };
     private Color currentColor = Color.BLACK;
-    private static final String[] lineTypes = { "Libre", "Línea recta", "Rectángulo", "Cuadrado", "Círculo" };
+    private static final String[] lineTypes = { "Libre", "Línea recta", "Rectángulo", "Círculo" };
     private String currentShapeType = "Libre";
     private Point startPoint, endPoint;
 
@@ -124,6 +124,10 @@ public class Paint extends JPanel {
         if (currentShapeType.equals("Línea recta")) {
             currentLine.setPoint(startPoint);
             currentLine.setPoint(endPoint);
+        } else if (currentShapeType.equals("Rectángulo")) {
+            drawRectangleOrSquare();
+        } else {
+            
         }
         // código para rectángulo, círculo y cuadrado
     }
@@ -281,6 +285,22 @@ public class Paint extends JPanel {
         m.add(mNew);
         m.add(mClose);
         return m;
+    }
+
+    /**
+     * dibuja un rectángulo o cuadrado
+     */
+    private void drawRectangleOrSquare() {
+        int x = Math.min(startPoint.x, endPoint.x);
+        int y = Math.min(startPoint.y, endPoint.y);
+        int width = Math.abs(startPoint.x - endPoint.x);
+        int height = Math.abs(startPoint.y - endPoint.y);
+
+        currentLine.setPoint(new Point(x, y));
+        currentLine.setPoint(new Point(x + width, y));
+        currentLine.setPoint(new Point(x + width, y + height));
+        currentLine.setPoint(new Point(x, y + height));
+        currentLine.setPoint(new Point(x, y));
     }
 
     public static void main(String[] args) {
