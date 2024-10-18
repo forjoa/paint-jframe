@@ -48,56 +48,84 @@ public class Paint extends JPanel {
             Color.WHITE };
     private Color currentColor = Color.BLACK;
     private static final String[] lineTypes = { "Libre", "Línea recta", "Rectángulo", "Cuadrado", "Círculo" };
-    private String currentShapeType = "Libre"; 
-    private Point startPoint, endPoint; 
+    private String currentShapeType = "Libre";
+    private Point startPoint, endPoint;
 
     public Paint() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                startPoint = e.getPoint();
-                if (currentShapeType.equals("Libre")) {
-                    currentLine = new Line();
-                    currentLine.setPoint(startPoint);
-                    currentLine.setStroke(lineStroke);
-                    currentLine.setColor(currentColor);
-                    lines.add(currentLine);
-                }
+                onMousePressed(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                endPoint = e.getPoint();
-                if (!currentShapeType.equals("Libre")) {
-                    currentLine = new Line();
-                    currentLine.setStroke(lineStroke);
-                    currentLine.setColor(currentColor);
-
-                    if (currentShapeType.equals("Línea recta")) {
-                        currentLine.setPoint(startPoint);
-                        currentLine.setPoint(endPoint);
-                    } else if (currentShapeType.equals("Rectángulo") || currentShapeType.equals("Cuadrado")) {
-                        // dibujar rectangulo o cuadrado
-                        // drawRectangleOrSquare();
-                    } else if (currentShapeType.equals("Círculo")) {
-                        // dibujar círculo
-                        // drawCircle();
-                    }
-                    lines.add(currentLine);
-                    repaint();
-                }
+                onMouseReleased(e);
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (currentShapeType.equals("Libre")) {
-                    currentLine.setPoint(e.getPoint());
-                    repaint();
-                }
+                onMouseDragged(e);
             }
         });
+    }
+
+    /**
+     * cuando se presiona el ratón
+     * 
+     * @param e evento de mouse
+     */
+    private void onMousePressed(MouseEvent e) {
+        startPoint = e.getPoint();
+        if (currentShapeType.equals("Libre")) {
+            currentLine = new Line();
+            currentLine.setPoint(startPoint);
+            currentLine.setStroke(lineStroke);
+            currentLine.setColor(currentColor);
+            lines.add(currentLine);
+        }
+    }
+
+    /**
+     * cuando se libera el ratón
+     * 
+     * @param e evento de mouse
+     */
+    private void onMouseReleased(MouseEvent e) {
+        endPoint = e.getPoint();
+        if (!currentShapeType.equals("Libre")) {
+            currentLine = new Line();
+            currentLine.setStroke(lineStroke);
+            currentLine.setColor(currentColor);
+            drawShape();
+            lines.add(currentLine);
+            repaint();
+        }
+    }
+
+    /**
+     * cuando se mueve el ratón
+     * 
+     * @param e evento de mouse
+     */
+    private void onMouseDragged(MouseEvent e) {
+        if (currentShapeType.equals("Libre")) {
+            currentLine.setPoint(e.getPoint());
+            repaint();
+        }
+    }
+
+    /**
+     * dibuja la forma seleccionada
+     */
+    private void drawShape() {
+        if (currentShapeType.equals("Línea recta")) {
+            currentLine.setPoint(startPoint);
+            currentLine.setPoint(endPoint);
+        }
+        // código para rectángulo, círculo y cuadrado
     }
 
     @Override
@@ -118,38 +146,66 @@ public class Paint extends JPanel {
         }
     }
 
+    /**
+     * setea el grosor de la línea
+     * 
+     * @param stroke grosor de la línea
+     */
     public void setLineStroke(int stroke) {
         this.lineStroke = stroke;
         repaint();
     }
 
+    /**
+     * setea el color de la línea
+     * 
+     * @param color color de la línea
+     */
     public void setNewColor(Color color) {
         this.currentColor = color;
         repaint();
     }
 
+    /**
+     * setea el tipo de línea
+     * 
+     * @param shapeType tipo de línea
+     */
     public void setShapeType(String shapeType) {
         this.currentShapeType = shapeType;
     }
 
-    public static void main(String[] args) {
-        JFrame f = new JFrame("Paint básico en Java");
-        f.setLayout(new BorderLayout());
-
-        Paint p = new Paint();
-        p.setBackground(Color.WHITE);
-
-        // Crear barra de menú
-        JMenuBar mb = new JMenuBar();
-        JMenu fileMenu = createFileMenu(f);
-        mb.add(fileMenu);
-        f.setJMenuBar(mb);
-
-        // Crear panel de herramientas para la parte superior
+    /**
+     * crear el panel de herramientas
+     * 
+     * @param p              panel donde se mostrarán los componentes
+     * @param sliderStroke   slider con el grosor de la línea
+     * @param colorsCombo    combo box con los colores
+     * @param lineTypesCombo combo box con los tipos de línea
+     * @return panel de herramientas
+     */
+    private static JPanel createToolsPanel(Paint p, JSlider sliderStroke, JComboBox<String> colorsCombo,
+            JComboBox<String> lineTypesCombo) {
         JPanel toolsPanel = new JPanel();
         toolsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        // Crear slider para el grosor de la línea
+        toolsPanel.add(new JLabel("Grosor:"));
+        toolsPanel.add(sliderStroke);
+        toolsPanel.add(new JLabel("Colores:"));
+        toolsPanel.add(colorsCombo);
+        toolsPanel.add(new JLabel("Tipo de línea:"));
+        toolsPanel.add(lineTypesCombo);
+
+        return toolsPanel;
+    }
+
+    /**
+     * crear el slider para el grosor de la línea
+     * 
+     * @param p panel donde se mostrará el slider
+     * @return slider con el grosor de la línea
+     */
+    private static JSlider createSlider(Paint p) {
         JSlider sliderStroke = new JSlider(1, 70, p.lineStroke);
         sliderStroke.addChangeListener(new ChangeListener() {
             @Override
@@ -157,8 +213,16 @@ public class Paint extends JPanel {
                 p.setLineStroke(sliderStroke.getValue());
             }
         });
+        return sliderStroke;
+    }
 
-        // Crear combo box para selección de color
+    /**
+     * crear el combo box para selección de color
+     * 
+     * @param p panel donde se mostrará el combo box
+     * @return combo box con los colores
+     */
+    private static JComboBox<String> createColorComboBox(Paint p) {
         JComboBox<String> colorsCombo = new JComboBox<>(colorNames);
         colorsCombo.setSelectedIndex(1);
         colorsCombo.addActionListener(new ActionListener() {
@@ -167,8 +231,16 @@ public class Paint extends JPanel {
                 p.setNewColor(colors[colorsCombo.getSelectedIndex()]);
             }
         });
+        return colorsCombo;
+    }
 
-        // Combo box para tipos de línea
+    /**
+     * crear el combo box para selección de tipo de línea
+     * 
+     * @param p panel donde se mostrará el combo box
+     * @return combo box con los tipos de línea
+     */
+    private static JComboBox<String> createLineTypeComboBox(Paint p) {
         JComboBox<String> lineTypesCombo = new JComboBox<>(lineTypes);
         lineTypesCombo.setSelectedIndex(0);
         lineTypesCombo.addActionListener(new ActionListener() {
@@ -177,25 +249,15 @@ public class Paint extends JPanel {
                 p.setShapeType(lineTypes[lineTypesCombo.getSelectedIndex()]);
             }
         });
-
-        // Añadir los componentes al panel de herramientas
-        toolsPanel.add(new JLabel("Grosor:"));
-        toolsPanel.add(sliderStroke);
-        toolsPanel.add(new JLabel("Colores:"));
-        toolsPanel.add(colorsCombo);
-        toolsPanel.add(new JLabel("Tipo de línea:"));
-        toolsPanel.add(lineTypesCombo);
-
-        // Añadir paneles y componentes al frame
-        f.add(toolsPanel, BorderLayout.NORTH);
-        f.add(p, BorderLayout.CENTER);
-
-        f.setSize(800, 600);
-        f.setLocationRelativeTo(null);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        return lineTypesCombo;
     }
 
+    /**
+     * crear el menú de archivo
+     * 
+     * @param f Frame donde se mostrará el menú
+     * @return JMenu con las opciones de archivo
+     */
     private static JMenu createFileMenu(JFrame f) {
         JMenu m = new JMenu("Archivo");
         JMenuItem mNew = new JMenuItem("Nuevo");
@@ -219,5 +281,36 @@ public class Paint extends JPanel {
         m.add(mNew);
         m.add(mClose);
         return m;
+    }
+
+    public static void main(String[] args) {
+        JFrame f = new JFrame("Paint básico en Java");
+        f.setLayout(new BorderLayout());
+
+        Paint p = new Paint();
+        p.setBackground(Color.WHITE);
+
+        // crear barra de menú
+        JMenuBar mb = new JMenuBar();
+        JMenu fileMenu = createFileMenu(f);
+        mb.add(fileMenu);
+        f.setJMenuBar(mb);
+
+        // crear componentes del panel de herramientas
+        JSlider sliderStroke = createSlider(p);
+        JComboBox<String> colorsCombo = createColorComboBox(p);
+        JComboBox<String> lineTypesCombo = createLineTypeComboBox(p);
+
+        // añadir el panel de herramientas
+        JPanel toolsPanel = createToolsPanel(p, sliderStroke, colorsCombo, lineTypesCombo);
+
+        // añadir paneles y componentes al frame
+        f.add(toolsPanel, BorderLayout.NORTH);
+        f.add(p, BorderLayout.CENTER);
+
+        f.setSize(800, 600);
+        f.setLocationRelativeTo(null);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
     }
 }
