@@ -125,9 +125,9 @@ public class Paint extends JPanel {
             currentLine.setPoint(startPoint);
             currentLine.setPoint(endPoint);
         } else if (currentShapeType.equals("Rectángulo")) {
-            drawRectangleOrSquare();
+            drawRectangle();
         } else {
-            
+
         }
         // código para rectángulo, círculo y cuadrado
     }
@@ -290,7 +290,7 @@ public class Paint extends JPanel {
     /**
      * dibuja un rectángulo o cuadrado
      */
-    private void drawRectangleOrSquare() {
+    private void drawRectangle() {
         int x = Math.min(startPoint.x, endPoint.x);
         int y = Math.min(startPoint.y, endPoint.y);
         int width = Math.abs(startPoint.x - endPoint.x);
