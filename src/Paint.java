@@ -127,9 +127,8 @@ public class Paint extends JPanel {
         } else if (currentShapeType.equals("Rectángulo")) {
             drawRectangle();
         } else {
-
+            drawCircle();
         }
-        // código para rectángulo, círculo y cuadrado
     }
 
     @Override
@@ -301,6 +300,21 @@ public class Paint extends JPanel {
         currentLine.setPoint(new Point(x + width, y + height));
         currentLine.setPoint(new Point(x, y + height));
         currentLine.setPoint(new Point(x, y));
+    }
+
+    /**
+     * dibuja un círculo
+     */
+    private void drawCircle() {
+        int radius = (int) startPoint.distance(endPoint);
+        int x = startPoint.x - radius;
+        int y = startPoint.y - radius;
+
+        for (int i = 0; i <= 360; i++) {
+            int cx = (int) (x + radius + radius * Math.cos(Math.toRadians(i)));
+            int cy = (int) (y + radius + radius * Math.sin(Math.toRadians(i)));
+            currentLine.setPoint(new Point(cx, cy));
+        }
     }
 
     public static void main(String[] args) {
